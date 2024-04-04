@@ -1,0 +1,89 @@
+#include <stdint.h>
+#include "msp.h"
+#include "../inc/CortexM.h"
+#include "../inc/PWM.h"
+#include <stdbool.h>
+#include "..\inc\Clock.h"
+
+void main(void){
+    WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
+    Clock_Init48MHz();
+    P7DIR |= 0x20;    //P7.5 as outputs
+    P7SEL1 &= ~0x20; //0010 0000
+    P7SEL0 |= 0x20;  //0010 0000
+
+    TA1CTL &= ~0x0030; //stop the timer
+  //                    SMCLK /4 UP
+    TA1CTL = 0x0200; // 0b0000 0010 //1001 0000
+    TA1EX0 = 0x0002;
+    TA1CCTL3 |= 0x00E0;//Outmode 7: reset/set
+    TA1CCR0 = 49999;  // Period count
+    TA1CCR3 = 7498;
+    TA1CTL |= 0x0010;
+
+
+
+
+ /// Output will show on Port 7 bit 5
+// 2.       Create a 100ms delay using Timer A2.  Use pin 2.4 to prove the delay is working properly.
+    //2.4 uses timer TA0.1 soo to use Timer TA2 2 we need to compare using block 1 so port 5 bit 6
+//
+//    P2DIR |= 0x10;    //P2.4 as outputs
+//    P2SEL1 &= ~0x20; //0010 0000
+//    P2SEL0 |= 0x20;  //0010 0000
+//
+//
+//
+//
+//    //***********Now initialize TimerAx for the delay function************//
+//        TA2CTL &= ~0x0030;//stop the timer
+//        TA2CTL |= 0x0250;//choose clock divider of 2  SMCLK
+//        TA2CTL &= ~0x0100; //SET mode up
+//    //    TA2CCTL1 |= BIT7&BIT6&BIT5;
+//        TA2CTL  |= 0x0020;//start timer in continuous mode
+//
+//    //choose clock divider of 2
+//    2.       Create a 100ms delay using Timer A2.  Use pin 2.4 to prove the delay is working properly.
+        // ----------------------------------  //
+void delayHundre(void){
+        TA2CTL &= ~0x0030;//stop the timer
+        TA2CTL |= 0x0290;//choose clock divider of 4  SMCLK  0b0000 0010 1001 0000
+        //TA2CTL &= ~0x0100; //SET mode up
+//        //TA2CTL |= 0x0020;//start timer in continuous mode
+//        TA2EX0 |= 0x0004; // clock divider of 4
+//        TA2CCR0 = 59999; // period
+//
+//        TA2R = 0;//clear the timer
+//        TA2CTL  |= 0x0020;//start timer in continuous mode
+//    while(!(TA2CCTL0 & 0x0001)){}; //complete while loop, wait for the CCIFG to assert
+//        TA2CCTL0 &= ~0x0001;//clear the CCIFG
+//        TA2CTL &= ~0x0030;//stop the timer
+//  }
+//void main(void){
+//    WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
+//    Clock_Init48MHz();
+//
+//    P2DIR |= 0x10;    //P2.4 as outputs
+//    P2SEL1 &= ~0x20; //0010 0000
+//    P2SEL0 |= 0x20;  //0010 0000
+//
+//
+//    while(1){
+//        delayHundre(); //delays 100ms
+//        P2OUT ^= 0x10;
+//    }
+//
+//}
+
+
+
+
+
+
+//void main(void){
+//	WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;		// stop watchdog timer
+//
+//
+//
+//
+//}
