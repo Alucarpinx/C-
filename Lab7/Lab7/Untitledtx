@@ -1,0 +1,72 @@
+enum tracking_state{Fordward, Right, Left}prevState, state;
+	state = forward
+	prevState = state;
+	unit16_t stateTimer;
+	bool isNewState;
+
+while(1){
+	int32_t position = Reflectance_Position(Reflectance_Read(1200));
+             isNewState = (state != prevState);
+             prevState = state;  //save state for next time
+
+            switch (state) {
+            
+            case Forward:
+            	if(isNewState){
+            	  MotorForward(7999, 7999);
+            	}
+                   
+                if(position > 48){
+                   state = Right;
+                }
+                if(position < -48){
+                   state = Left;
+                }
+                    break;
+                    
+            case Right:
+                          if(isNewState){
+                              MotorRight(7599, 9099);
+                          }
+                          if(position >= 48){
+                   			  MotorRight(7599, 9099);
+                		  }
+                          if(position >= 142){
+                   			  MotorRight(7599, 9099);
+                		  }	  
+                          if(position >= 238){
+                   			  MotorRight(7599, 9099);
+                		  }             		  
+                          if(position >= 334){
+                             MotorRight(7599, 9099);
+                          }
+                          if(position <= -48)
+                          	state = Forward;
+                              break;
+
+            case Left:
+                          if(isNewState){
+                              MotorLeft(7599, 9099);
+                          }
+                          if(position <= -48){
+                   			  MotorLeft(7599, 9099);
+                		  }
+                          if(position <= -142){
+                   			  MotorLeft(7599, 9099);
+                		  }	  
+                          if(position <= -238){
+                   			  MotorLeft(7599, 9099);
+                		  }             		  
+                          if(position <= -334){
+                             MotorLeft(7599, 9099);
+                          }
+                          if(position <= 48)
+                          	state = Forward;
+                              break;
+            } //switch
+            DelayTenMilliseconds();
+            P2OUT ^= 0b00000100; //Toggles Blue light
+         } //while(1)
+     } //main()
+
+
